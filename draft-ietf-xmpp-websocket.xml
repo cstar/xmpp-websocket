@@ -313,11 +313,11 @@ S: <close xmlns="urn:ietf:params:xml:ns:xmpp-framing"
 <features xmlns="http://etherx.jabber.org/streams">
   <bind xmlns="urn:ietf:params:xml:ns:xmpp-bind" />
 </features>
----------------------------------------------------------------------
+
 <error xmlns="http://etherx.jabber.org/streams">
   <host-unknown xmlns='urn:ietf:params:xml:ns:xmpp-streams'/>
 </error>
----------------------------------------------------------------------
+
 <message xmlns="jabber:client" xml:lang="en">
   <body>Every WebSocket message is parsable by itself.</body>
 </message>
@@ -337,7 +337,7 @@ S: <close xmlns="urn:ietf:params:xml:ns:xmpp-framing"
         </t>
         <figure>
           <artwork><![CDATA[
-S:  <success xmlns="urn:ietf:params:xml:ns:xmpp-sasl" />
+S: <success xmlns="urn:ietf:params:xml:ns:xmpp-sasl" />
 
 [Streams implicitly closed]
 
