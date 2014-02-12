@@ -155,7 +155,7 @@ S:  HTTP/1.1 101 Switching Protocols
 
 [WebSocket connection established]
 
-C:  <open xmlns="http://etherx.jabber.org/streams"
+C:  <open xmlns="urn:ietf:params:xml:ns:xmpp-framing"
           to="example.com"
           version="1.0" />
 ]]></artwork>
@@ -179,7 +179,7 @@ C:  <open xmlns="http://etherx.jabber.org/streams"
       <section title="XMPP Stream Setup" anchor="setup">
         <t>
           The first message sent after the handshake is complete MUST
-          be an &lt;open /&gt; element using the "http://etherx.jabber.org/streams"
+          be an &lt;open /&gt; element using the "urn:ietf:params:xml:ns:xmpp-framing"
           namespace, whose attributes mirror those in the XMPP
           opening stream tag as defined in XMPP <xref
           target="RFC6120"/>. The '&lt;' character of the open tag
@@ -215,7 +215,7 @@ C:  <open xmlns="http://etherx.jabber.org/streams"
           time. Before closing the connection, the closing party SHOULD
           close the XMPP stream, if it has been established, by sending a
           message with the &lt;close /&gt; element, qualified by
-          the "http://etherx.jabber.org/streams" namespace. The
+          the "urn:ietf:params:xml:ns:xmpp-framing" namespace. The
           stream is considered closed when a corresponding &lt;close/&gt;
           element is received from the other party.
         </t>
@@ -235,9 +235,9 @@ C:  <open xmlns="http://etherx.jabber.org/streams"
           <artwork><![CDATA[
 Client                         (XMPP WSS)                      Server
 |  |                                                             |  |
-|  | <close xmlns="http://etherx.jabber.org/streams />           |  |
+|  | <close xmlns="urn:ietf:params:xml:ns:xmpp-framing />           |  |
 |  |------------------------------------------------------------>|  |
-|  |          <close xmlns="http://etherx.jabber.org/streams" /> |  |
+|  |          <close xmlns="urn:ietf:params:xml:ns:xmpp-framing" /> |  |
 |  |<------------------------------------------------------------|  |
 |  |                                                             |  |
 |  |                      (XMPP Stream Closed)                   |  |
@@ -265,7 +265,7 @@ Client                         (XMPP WSS)                      Server
         </t>
         <section title="see-other-uri" anchor="see-other-uri">
           <t>
-            If the server (or an intermediate connection mananger) wishes to instruct
+            If the server (or a connection mananger intermediary) wishes to instruct
             the client to move to a different WebSocket endpoint (e.g. for load balancing
             purposes), the server MAY send a &lt;close /&gt; element and set the
             "see-other-uri" attribute to the URI of the new WebSocket endpoint.
@@ -280,7 +280,7 @@ Client                         (XMPP WSS)                      Server
               to connect at a different WebSocket endpoint:
             </preamble>
             <artwork><![CDATA[
-S: <close xmlns="http://etherx.jabber.org/streams"
+S: <close xmlns="urn:ietf:params:xml:ns:xmpp-framing"
           see-other-uri="wss://otherendpoint.example/xmpp-bind" />
 ]]></artwork>
           </figure>
@@ -304,10 +304,10 @@ S: <close xmlns="http://etherx.jabber.org/streams"
         <figure>
           <preamble>
             Examples of WebSocket messages that contain independently
-            parsable XML fragments. Note that for stream features and
+            parsable XML fragments (note that for stream features and
             errors, there is no parent context element providing the
             "stream" namespace prefix as in <xref target="RFC6120"/>,
-            and thus the stream namespace MUST be declared:
+            and thus the stream namespace MUST be declared):
           </preamble>
           <artwork><![CDATA[
 <features xmlns="http://etherx.jabber.org/streams">
@@ -341,7 +341,7 @@ S:  <success xmlns="urn:ietf:params:xml:ns:xmpp-sasl" />
 
 [Streams implicitly closed]
 
-C: <open xmlns="http://etherx.jabber.org/streams"
+C: <open xmlns="urn:ietf:params:xml:ns:xmpp-framing"
          to="example.com"
          version="1.0" />
 ]]></artwork></figure>
