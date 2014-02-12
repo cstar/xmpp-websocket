@@ -389,9 +389,14 @@
 <link href="#rfc.section.3.9" rel="Chapter" title="3.9 Use of TLS"/>
 <link href="#rfc.section.3.10" rel="Chapter" title="3.10 Stream Management"/>
 <link href="#rfc.section.4" rel="Chapter" title="4 Discovering Connection Method"/>
-<link href="#rfc.section.5" rel="Chapter" title="5 Security Considerations"/>
-<link href="#rfc.section.6" rel="Chapter" title="6 IANA Considerations"/>
-<link href="#rfc.references" rel="Chapter" title="7 Informative References"/>
+<link href="#rfc.section.5" rel="Chapter" title="5 IANA Considerations"/>
+<link href="#rfc.section.5.1" rel="Chapter" title="5.1 WebSocket Subprotocol Name"/>
+<link href="#rfc.section.5.2" rel="Chapter" title="5.2 URN Sub-Namespace"/>
+<link href="#rfc.section.6" rel="Chapter" title="6 Security Considerations"/>
+<link href="#rfc.references" rel="Chapter" title="7 References"/>
+<link href="#rfc.references.1" rel="Chapter" title="7.1 Normative References"/>
+<link href="#rfc.references.2" rel="Chapter" title="7.2 Informative References"/>
+<link href="#rfc.appendix.A" rel="Chapter" title="A XML Schema"/>
 <link href="#rfc.authors" rel="Chapter"/>
 
 
@@ -484,9 +489,14 @@
 <li>3.9.   <a href="#rfc.section.3.9">Use of TLS</a></li>
 <li>3.10.   <a href="#rfc.section.3.10">Stream Management</a></li>
 <li>4.   <a href="#rfc.section.4">Discovering Connection Method</a></li>
-<li>5.   <a href="#rfc.section.5">Security Considerations</a></li>
-<li>6.   <a href="#rfc.section.6">IANA Considerations</a></li>
-<li>7.   <a href="#rfc.references">Informative References</a></li>
+<li>5.   <a href="#rfc.section.5">IANA Considerations</a></li>
+<li>5.1.   <a href="#rfc.section.5.1">WebSocket Subprotocol Name</a></li>
+<li>5.2.   <a href="#rfc.section.5.2">URN Sub-Namespace</a></li>
+<li>6.   <a href="#rfc.section.6">Security Considerations</a></li>
+<li>7.   <a href="#rfc.references">References</a></li>
+<li>7.1.   <a href="#rfc.references.1">Normative References</a></li>
+<li>7.2.   <a href="#rfc.references.2">Informative References</a></li>
+<li>Appendix A.   <a href="#rfc.appendix.A">XML Schema</a></li>
 <li><a href="#rfc.authors">Authors' Addresses</a></li>
 
 
@@ -534,7 +544,7 @@ C:  &lt;open xmlns="urn:ietf:params:xml:ns:xmpp-framing"
 <p id="rfc.section.3.2.p.1">Data frame messages in the XMPP sub-protocol MUST be of the text type and contain UTF-8 encoded data. The close control frame's contents are specified in <a href="#closing">Section 3.5</a>.  Control frames other than close are not restricted.  </p>
 <p id="rfc.section.3.2.p.2">Unless noted in text, the word "message" will mean a WebSocket message composed of text data frames.  </p>
 <h1 id="rfc.section.3.3"><a href="#rfc.section.3.3">3.3.</a> <a href="#setup" id="setup">XMPP Stream Setup</a></h1>
-<p id="rfc.section.3.3.p.1">The first message sent after the handshake is complete MUST be an &lt;open /&gt; element using the "urn:ietf:params:xml:ns:xmpp-framing" namespace, whose attributes mirror those in the XMPP opening stream tag as defined in XMPP <a href="#RFC6120">[RFC6120]</a>. The '&lt;' character of the open tag MUST be the first character of the text payload.  </p>
+<p id="rfc.section.3.3.p.1">The first message sent after the handshake is complete MUST be an &lt;open /&gt; element using the "urn:ietf:params:xml:ns:xmpp-framing" namespace, whose 'from', 'id', 'to' and 'version' attributes mirror those in the XMPP opening stream tag as defined for the 'http://etherx.jabber.org/streams' namespace in XMPP <a href="#RFC6120">[RFC6120]</a>. The '&lt;' character of the open tag MUST be the first character of the text payload.  </p>
 <p id="rfc.section.3.3.p.2">The server MUST respond with an &lt;open /&gt; element, or a &lt;close /&gt; element (see <a href="#see-other-uri">Section 3.5.1</a>).  </p>
 <p id="rfc.section.3.3.p.3">Clients MUST NOT attempt to multiplex XMPP streams for multiple JIDs over the same WebSocket.  </p>
 <h1 id="rfc.section.3.4"><a href="#rfc.section.3.4">3.4.</a> <a href="#errors" id="errors">Stream Errors</a></h1>
@@ -580,11 +590,11 @@ S: &lt;close xmlns="urn:ietf:params:xml:ns:xmpp-framing"
 &lt;features xmlns="http://etherx.jabber.org/streams"&gt;
   &lt;bind xmlns="urn:ietf:params:xml:ns:xmpp-bind" /&gt;
 &lt;/features&gt;
----------------------------------------------------------------------
+
 &lt;error xmlns="http://etherx.jabber.org/streams"&gt;
   &lt;host-unknown xmlns='urn:ietf:params:xml:ns:xmpp-streams'/&gt;
 &lt;/error&gt;
----------------------------------------------------------------------
+
 &lt;message xmlns="jabber:client" xml:lang="en"&gt;
   &lt;body&gt;Every WebSocket message is parsable by itself.&lt;/body&gt;
 &lt;/message&gt;
@@ -592,7 +602,7 @@ S: &lt;close xmlns="urn:ietf:params:xml:ns:xmpp-framing"
 <h1 id="rfc.section.3.7"><a href="#rfc.section.3.7">3.7.</a> Stream Restarts</h1>
 <p id="rfc.section.3.7.p.1">After successful SASL authentication, an XMPP stream needs to be restarted. In these cases, as soon as the message is sent (or received) containing the success indication, both the server and client streams are implicitly closed, and new streams need to be opened. The client MUST open a new stream as in <a href="#setup">Section 3.3</a> and MUST NOT send a closing &lt;close /&gt; element.  </p>
 <pre>
-S:  &lt;success xmlns="urn:ietf:params:xml:ns:xmpp-sasl" /&gt;
+S: &lt;success xmlns="urn:ietf:params:xml:ns:xmpp-sasl" /&gt;
 
 [Streams implicitly closed]
 
@@ -613,13 +623,9 @@ C: &lt;open xmlns="urn:ietf:params:xml:ns:xmpp-framing"
 <p id="rfc.section.4.p.1">The XMPP extension Discovering Alternate XMPP Connection Methods <a href="#XEP-0156">[XEP-0156]</a> provides mechanisms to discover the additional information needed to connect to an XMPP server outside of the procedure defined in in Section 3 of <a href="#RFC6120">[RFC6120]</a>.  </p>
 <p id="rfc.section.4.p.2">Servers MAY expose such discovery information, and clients MAY use such information to determine the WebSocket endpoint for a server.  </p>
 <p id="rfc.section.4.p.3">Use of the HTTP lookup method in <a href="#XEP-0156">[XEP-0156]</a> MAY be used to establish trust between the XMPP server domain and the WebSocket endpoint, particularly in multi-tenant situations where the same WebSocket endpoint is serving multiple XMPP domains.  </p>
-<h1 id="rfc.section.5"><a href="#rfc.section.5">5.</a> <a href="#security" id="security">Security Considerations</a></h1>
-<p id="rfc.section.5.p.1">Since application level TLS cannot be used (see <a href="#tls">Section 3.9</a>), applications which need to protect the privacy of the XMPP traffic need to do so at the WebSocket or other appropriate layer.  </p>
-<p id="rfc.section.5.p.2">Browser based applications are not able to inspect and verify at the application layer the certificate used for the WebSocket connection to ensure that it corresponds to the domain specified as the "to" address of the XMPP stream. For hosts whose domain matches the origin for the WebSocket connection, that check is already performed by the browser.  However, in situations where the domain of the XMPP server might not match the origin for the WebSocket endpoint (especially multi-tenant hosting situations), the HTTP discovery method in <a href="#XEP-0156">[XEP-0156]</a> MAY be used to delegate trust from the XMPP server domain to the WebSocket origin.  </p>
-<p id="rfc.section.5.p.3">When presented with a new WebSocket endpoint via the "see-other-uri" attribute of a &lt;close/&gt; element, clients MUST NOT accept the suggestion if the security context of the new endpoint is lower than the current one in order to prevent downgrade attacks from a "wss://" endpoint to "ws://".  </p>
-<p id="rfc.section.5.p.4">The Security Considerations for both WebSocket (see Section 10 of <a href="#RFC6455">[RFC6455]</a> and XMPP (see Section 13 of <a href="#RFC6120">[RFC6120]</a>) apply to the WebSocket XMPP sub-protocol.  </p>
-<h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> <a href="#iana" id="iana">IANA Considerations</a></h1>
-<p id="rfc.section.6.p.1">This specification requests IANA to register the WebSocket XMPP sub-protocol under the "WebSocket Subprotocol Name" Registry with the following data: </p>
+<h1 id="rfc.section.5"><a href="#rfc.section.5">5.</a> <a href="#iana" id="iana">IANA Considerations</a></h1>
+<h1 id="rfc.section.5.1"><a href="#rfc.section.5.1">5.1.</a> <a href="#iana-ws" id="iana-ws">WebSocket Subprotocol Name</a></h1>
+<p id="rfc.section.5.1.p.1">This specification requests IANA to register the WebSocket XMPP sub-protocol under the "WebSocket Subprotocol Name" Registry with the following data: </p>
 
 <dl>
   <dt>Subprotocol Identifier:</dt>
@@ -631,8 +637,31 @@ C: &lt;open xmlns="urn:ietf:params:xml:ns:xmpp-framing"
 </dl>
 
 <p> </p>
-<p id="rfc.section.6.p.2">[[NOTE TO RFC EDITOR: Please change XXXX to the number assigned to this document upon publication.]] </p>
-<h1 id="rfc.references"><a href="#rfc.references">7.</a> Informative References</h1>
+<p id="rfc.section.5.1.p.2">[[ NOTE TO RFC EDITOR: Please replace "XXXX" with the number assigned to this document upon publication as an RFC. ]]</p>
+<h1 id="rfc.section.5.2"><a href="#rfc.section.5.2">5.2.</a> <a href="#iana-ns" id="iana-ns">URN Sub-Namespace</a></h1>
+<p id="rfc.section.5.2.p.1">A URN sub-namespace for framing of Extensible Messaging and Presence Protocol (XMPP) streams is defined as follows.</p>
+<p/>
+
+<dl>
+  <dt>URI:</dt>
+  <dd style="margin-left: 8">urn:ietf:params:xml:ns:xmpp-framing</dd>
+  <dt>Specification:</dt>
+  <dd style="margin-left: 8">RFC XXXX</dd>
+  <dt>Description:</dt>
+  <dd style="margin-left: 8">This is the XML namespace name for framing of Extensible Messaging and Presence Protocol (XMPP) streams as defined by RFC XXXX.</dd>
+  <dt>Registrant Contact:</dt>
+  <dd style="margin-left: 8">IESG &lt;iesg@ietf.org&gt;</dd>
+</dl>
+
+<p> </p>
+<p id="rfc.section.5.2.p.3">[[ NOTE TO RFC EDITOR: Please replace "XXXX" with the number assigned to this document upon publication as an RFC. ]]</p>
+<h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> <a href="#security" id="security">Security Considerations</a></h1>
+<p id="rfc.section.6.p.1">Since application level TLS cannot be used (see <a href="#tls">Section 3.9</a>), applications which need to protect the privacy of the XMPP traffic need to do so at the WebSocket or other appropriate layer.  </p>
+<p id="rfc.section.6.p.2">Browser based applications are not able to inspect and verify at the application layer the certificate used for the WebSocket connection to ensure that it corresponds to the domain specified as the "to" address of the XMPP stream. For hosts whose domain matches the origin for the WebSocket connection, that check is already performed by the browser.  However, in situations where the domain of the XMPP server might not match the origin for the WebSocket endpoint (especially multi-tenant hosting situations), the HTTP discovery method in <a href="#XEP-0156">[XEP-0156]</a> MAY be used to delegate trust from the XMPP server domain to the WebSocket origin.  </p>
+<p id="rfc.section.6.p.3">When presented with a new WebSocket endpoint via the "see-other-uri" attribute of a &lt;close/&gt; element, clients MUST NOT accept the suggestion if the security context of the new endpoint is lower than the current one in order to prevent downgrade attacks from a "wss://" endpoint to "ws://".  </p>
+<p id="rfc.section.6.p.4">The Security Considerations for both WebSocket (see Section 10 of <a href="#RFC6455">[RFC6455]</a> and XMPP (see Section 13 of <a href="#RFC6120">[RFC6120]</a>) apply to the WebSocket XMPP sub-protocol.  </p>
+<h1 id="rfc.references"><a href="#rfc.references">7.</a> References</h1>
+<h1 id="rfc.references.1"><a href="#rfc.references.1">7.1.</a> Normative References</h1>
 <table>
   <tbody>
     <tr>
@@ -647,6 +676,17 @@ C: &lt;open xmlns="urn:ietf:params:xml:ns:xmpp-framing"
       </td>
       <td class="top"><a>Saint-Andre, P.</a>, "<a href="http://tools.ietf.org/html/rfc6120">Extensible Messaging and Presence Protocol (XMPP): Core</a>", RFC 6120, March 2011.</td>
     </tr>
+    <tr>
+      <td class="reference">
+        <b id="XEP-0156">[XEP-0156]</b>
+      </td>
+      <td class="top"><a href="mailto:jhildebr@cisco.com">Hildebrand, J.</a>, <a href="mailto:stpeter@jabber.org">Saint-Andre, P.</a> and <a href="mailto:lance@andyet.com">L. Stout</a>, "<a>Discovering Alternative XMPP Connection Methods</a>", XSF XEP 0156, January 2014.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.references.2"><a href="#rfc.references.2">7.2.</a> Informative References</h1>
+<table>
+  <tbody>
     <tr>
       <td class="reference">
         <b id="RFC6121">[RFC6121]</b>
@@ -673,12 +713,6 @@ C: &lt;open xmlns="urn:ietf:params:xml:ns:xmpp-framing"
     </tr>
     <tr>
       <td class="reference">
-        <b id="XEP-0156">[XEP-0156]</b>
-      </td>
-      <td class="top"><a href="mailto:jhildebr@cisco.com">Hildebrand, J.</a>, <a href="mailto:stpeter@jabber.org">Saint-Andre, P.</a> and <a href="mailto:lance@andyet.com">L. Stout</a>, "<a>Discovering Alternative XMPP Connection Methods</a>", XSF XEP 0156, January 2014.</td>
-    </tr>
-    <tr>
-      <td class="reference">
         <b id="XEP-0198">[XEP-0198]</b>
       </td>
       <td class="top"><a href="mailto:justin@affinix.com">Karneges, J.</a>, <a href="mailto:stpeter@jabber.org">Saint-Andre, P.</a>, <a href="mailto:jhildebr@cisco.com">Hildebrand, J.</a>, <a href="mailto:fabio.forno@gmail.com">Forno, F.</a>, <a href="mailto:dave@cridland.net">Cridland, D.</a> and <a href="mailto:mwild1@gmail.com">M. Wild</a>, "<a>Stream Management</a>", XSF XEP 0198, June 2011.</td>
@@ -695,8 +729,75 @@ C: &lt;open xmlns="urn:ietf:params:xml:ns:xmpp-framing"
       </td>
       <td class="top"><a href="mailto:ian.paterson@clientside.co.uk">Paterson, I.</a>, <a href="mailto:stpeter@jabber.org">Saint-Andre, P.</a> and <a href="mailto:lance@andyet.com">L. Stout</a>, "<a>XMPP Over BOSH</a>", XSF XEP 0206, November 2013.</td>
     </tr>
+    <tr>
+      <td class="reference">
+        <b id="XML-SCHEMA">[XML-SCHEMA]</b>
+      </td>
+      <td class="top"><a>Thompson, H.</a>, <a>Maloney, M.</a>, <a>Mendelsohn, N.</a> and <a>D. Beech</a>, "<a href="http://www.w3.org/TR/2004/REC-xmlschema-1-20041028">XML Schema Part 1: Structures Second Edition</a>", World Wide Web Consortium Recommendation REC-xmlschema-1-20041028, October 2004.</td>
+    </tr>
   </tbody>
 </table>
+<h1 id="rfc.appendix.A"><a href="#rfc.appendix.A">Appendix A.</a> <a href="#schema" id="schema">XML Schema</a></h1>
+<p id="rfc.section.A.p.1">The following schema formally defines the 'urn:ietf:params:xml:ns:xmpp-framing' namespace used in this document, in conformance with W3C XML Schema <a href="#XML-SCHEMA">[XML-SCHEMA]</a>.  Because validation of XML streams and stanzas is optional, this schema is not normative and is provided for descriptive purposes only.</p>
+<pre>
+&lt;?xml version='1.0' encoding='UTF-8'?&gt;
+
+&lt;xs:schema
+    xmlns:xs='http://www.w3.org/2001/XMLSchema'
+    targetNamespace='urn:ietf:params:xml:ns:xmpp-framing'
+    xmlns='urn:ietf:params:xml:ns:xmpp-framing'
+    elementFormDefault='unqualified'&gt;
+
+  &lt;xs:element name='open'&gt;
+    &lt;xs:complexType&gt;
+      &lt;xs:simpleContent&gt;
+        &lt;xs:extension base='empty'&gt;
+          &lt;xs:attribute name='from' type='xs:string' 
+                        use='optional'/&gt;
+          &lt;xs:attribute name='id' type='xs:string' 
+                        use='optional'/&gt;
+          &lt;xs:attribute name='see-other-uri' type='xs:anyURI' 
+                        use='optional'/&gt;
+          &lt;xs:attribute name='to' type='xs:string' 
+                        use='optional'/&gt;
+          &lt;xs:attribute name='version' type='xs:decimal' 
+                        use='optional'/&gt;
+          &lt;xs:attribute ref='xml:lang' 
+                        use='optional'/&gt;
+        &lt;/xs:extension&gt;
+      &lt;/xs:simpleContent&gt;
+    &lt;/xs:complexType&gt;
+  &lt;/xs:element&gt;
+
+  &lt;xs:element name='close'&gt;
+    &lt;xs:complexType&gt;
+      &lt;xs:simpleContent&gt;
+        &lt;xs:extension base='empty'&gt;
+          &lt;xs:attribute name='from' type='xs:string' 
+                        use='optional'/&gt;
+          &lt;xs:attribute name='id' type='xs:string' 
+                        use='optional'/&gt;
+          &lt;xs:attribute name='see-other-uri' type='xs:anyURI' 
+                        use='optional'/&gt;
+          &lt;xs:attribute name='to' type='xs:string' 
+                        use='optional'/&gt;
+          &lt;xs:attribute name='version' type='xs:decimal' 
+                        use='optional'/&gt;
+          &lt;xs:attribute ref='xml:lang' 
+                        use='optional'/&gt;
+        &lt;/xs:extension&gt;
+      &lt;/xs:simpleContent&gt;
+    &lt;/xs:complexType&gt;
+  &lt;/xs:element&gt;
+
+  &lt;xs:simpleType name='empty'&gt;
+    &lt;xs:restriction base='xs:string'&gt;
+      &lt;xs:enumeration value=''/&gt;
+    &lt;/xs:restriction&gt;
+  &lt;/xs:simpleType&gt;
+
+&lt;/xs:schema&gt;
+        </pre>
 <h1 id="rfc.authors">
   <a href="#rfc.authors">Authors' Addresses</a>
 </h1>
