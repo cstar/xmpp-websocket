@@ -180,8 +180,8 @@ C:  <open xmlns="urn:ietf:params:xml:ns:xmpp-framing"
         <t>
           The first message sent after the handshake is complete MUST
           be an &lt;open /&gt; element using the "urn:ietf:params:xml:ns:xmpp-framing"
-          namespace, whose attributes mirror those in the XMPP
-          opening stream tag as defined in XMPP <xref
+          namespace, whose 'from', 'id', 'to' and 'version' attributes mirror those in the XMPP
+          opening stream tag as defined for the 'http://etherx.jabber.org/streams' namespace in XMPP <xref
           target="RFC6120"/>. The '&lt;' character of the open tag
           MUST be the first character of the text payload.
         </t>
@@ -420,6 +420,41 @@ C: <open xmlns="urn:ietf:params:xml:ns:xmpp-framing"
       </t>
     </section>
 
+    <section anchor="iana" title="IANA Considerations">
+      <section anchor="iana-ws" title="WebSocket Subprotocol Name">
+        <t>
+          This specification requests IANA to register the WebSocket XMPP
+          sub-protocol under the "WebSocket Subprotocol Name" Registry
+          with the following data:
+          <list style="hanging">
+            <t hangText="Subprotocol Identifier:">
+              xmpp
+            </t>
+            <t hangText="Subprotocol Common Name:">
+              WebSocket Transport for the Extensible Messaging and
+              Presence Protocol (XMPP)
+            </t>
+            <t hangText="Subprotocol Definition:">
+              RFC XXXX
+            </t>
+          </list>
+        </t>
+        <t>[[ NOTE TO RFC EDITOR: Please replace "XXXX" with the number assigned to this document upon publication as an RFC. ]]</t>
+      </section>
+      <section anchor="iana-ns" title="URN Sub-Namespace">
+        <t>A URN sub-namespace for framing of Extensible Messaging and Presence Protocol (XMPP) streams is defined as follows.</t>
+        <t>
+          <list style='hanging'>
+            <t hangText='URI:'>urn:ietf:params:xml:ns:xmpp-framing</t>
+            <t hangText='Specification:'>RFC XXXX</t>
+            <t hangText='Description:'>This is the XML namespace name for framing of Extensible Messaging and Presence Protocol (XMPP) streams as defined by RFC XXXX.</t>
+            <t hangText='Registrant Contact:'>IESG &lt;iesg@ietf.org&gt;</t>
+          </list>
+        </t>
+        <t>[[ NOTE TO RFC EDITOR: Please replace "XXXX" with the number assigned to this document upon publication as an RFC. ]]</t>
+      </section>
+    </section>
+
     <section anchor="security" title="Security Considerations">
       <t>
         Since application level TLS cannot be used (see <xref
@@ -453,43 +488,111 @@ C: <open xmlns="urn:ietf:params:xml:ns:xmpp-framing"
       </t>
     </section>
 
-    <section anchor="iana" title="IANA Considerations">
-      <t>
-        This specification requests IANA to register the WebSocket XMPP
-        sub-protocol under the "WebSocket Subprotocol Name" Registry
-        with the following data:
-        <list style="hanging">
-          <t hangText="Subprotocol Identifier:">
-            xmpp
-          </t>
-          <t hangText="Subprotocol Common Name:">
-            WebSocket Transport for the Extensible Messaging and
-            Presence Protocol (XMPP)
-          </t>
-          <t hangText="Subprotocol Definition:">
-            RFC XXXX
-          </t>
-        </list>
-      </t>
-      <t>
-        [[NOTE TO RFC EDITOR: Please change XXXX to the number assigned
-        to this document upon publication.]]
-      </t>
-    </section>
   </middle>
 
   <back>
-    <references title="Informative References">
+    <references title="Normative References">
       <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"?>
       <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.6120.xml"?>
+      <?rfc include="http://xmpp.org/extensions/refs/reference.XSF.XEP-0156.xml"?>
+    </references>
+    <references title="Informative References">
       <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.6121.xml"?>
       <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.6202.xml"?>
       <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.6455.xml"?>
       <?rfc include="http://xmpp.org/extensions/refs/reference.XSF.XEP-0124.xml"?>
-      <?rfc include="http://xmpp.org/extensions/refs/reference.XSF.XEP-0199.xml"?>
-      <?rfc include="http://xmpp.org/extensions/refs/reference.XSF.XEP-0156.xml"?>
-      <?rfc include="http://xmpp.org/extensions/refs/reference.XSF.XEP-0206.xml"?>
       <?rfc include="http://xmpp.org/extensions/refs/reference.XSF.XEP-0198.xml"?>
+      <?rfc include="http://xmpp.org/extensions/refs/reference.XSF.XEP-0199.xml"?>
+      <?rfc include="http://xmpp.org/extensions/refs/reference.XSF.XEP-0206.xml"?>
+<reference anchor='XML-SCHEMA'
+           target='http://www.w3.org/TR/2004/REC-xmlschema-1-20041028'>
+<front>
+<title>XML Schema Part 1: Structures Second Edition</title>
+<author initials='H.' surname='Thompson' fullname='Henry S. Thompson'>
+    <organization />
+</author>
+<author initials='M.' surname='Maloney' fullname='Murray Maloney'>
+    <organization />
+</author>
+<author initials='N.' surname='Mendelsohn' fullname='Noah Mendelsohn'>
+    <organization />
+</author>
+<author initials='D.' surname='Beech' fullname='David Beech'>
+    <organization />
+</author>
+<date month='October' day='28' year='2004' />
+</front>
+<seriesInfo name='World Wide Web Consortium Recommendation' value='REC-xmlschema-1-20041028' />
+<format type='HTML' target='http://www.w3.org/TR/2004/REC-xmlschema-1-20041028' />
+</reference>
+
     </references>
+
+    <section title="XML Schema" anchor="schema">
+      <t>The following schema formally defines the 'urn:ietf:params:xml:ns:xmpp-framing' namespace used in this document, in conformance with W3C XML Schema <xref target='XML-SCHEMA'/>.  Because validation of XML streams and stanzas is optional, this schema is not normative and is provided for descriptive purposes only.</t>
+      <figure>
+        <artwork><![CDATA[
+<?xml version='1.0' encoding='UTF-8'?>
+
+<xs:schema
+    xmlns:xs='http://www.w3.org/2001/XMLSchema'
+    targetNamespace='urn:ietf:params:xml:ns:xmpp-framing'
+    xmlns='urn:ietf:params:xml:ns:xmpp-framing'
+    elementFormDefault='unqualified'>
+
+  <xs:element name='open'>
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base='empty'>
+          <xs:attribute name='from' type='xs:string' 
+                        use='optional'/>
+          <xs:attribute name='id' type='xs:string' 
+                        use='optional'/>
+          <xs:attribute name='see-other-uri' type='xs:anyURI' 
+                        use='optional'/>
+          <xs:attribute name='to' type='xs:string' 
+                        use='optional'/>
+          <xs:attribute name='version' type='xs:decimal' 
+                        use='optional'/>
+          <xs:attribute ref='xml:lang' 
+                        use='optional'/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name='close'>
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base='empty'>
+          <xs:attribute name='from' type='xs:string' 
+                        use='optional'/>
+          <xs:attribute name='id' type='xs:string' 
+                        use='optional'/>
+          <xs:attribute name='see-other-uri' type='xs:anyURI' 
+                        use='optional'/>
+          <xs:attribute name='to' type='xs:string' 
+                        use='optional'/>
+          <xs:attribute name='version' type='xs:decimal' 
+                        use='optional'/>
+          <xs:attribute ref='xml:lang' 
+                        use='optional'/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:simpleType name='empty'>
+    <xs:restriction base='xs:string'>
+      <xs:enumeration value=''/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>
+        ]]></artwork>
+      </figure>
+    </section>
+
   </back>
+
 </rfc>
