@@ -235,9 +235,9 @@ C:  <open xmlns="urn:ietf:params:xml:ns:xmpp-framing"
           <artwork><![CDATA[
 Client                         (XMPP WSS)                      Server
 |  |                                                             |  |
-|  | <close xmlns="urn:ietf:params:xml:ns:xmpp-framing />           |  |
+|  | <close xmlns="urn:ietf:params:xml:ns:xmpp-framing />        |  |
 |  |------------------------------------------------------------>|  |
-|  |          <close xmlns="urn:ietf:params:xml:ns:xmpp-framing" /> |  |
+|  |       <close xmlns="urn:ietf:params:xml:ns:xmpp-framing" /> |  |
 |  |<------------------------------------------------------------|  |
 |  |                                                             |  |
 |  |                      (XMPP Stream Closed)                   |  |

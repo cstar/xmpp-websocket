@@ -525,7 +525,7 @@ S:  HTTP/1.1 101 Switching Protocols
 
 [WebSocket connection established]
 
-C:  &lt;open xmlns="http://etherx.jabber.org/streams"
+C:  &lt;open xmlns="urn:ietf:params:xml:ns:xmpp-framing"
           to="example.com"
           version="1.0" /&gt;
 </pre>
@@ -534,22 +534,22 @@ C:  &lt;open xmlns="http://etherx.jabber.org/streams"
 <p id="rfc.section.3.2.p.1">Data frame messages in the XMPP sub-protocol MUST be of the text type and contain UTF-8 encoded data. The close control frame's contents are specified in <a href="#closing">Section 3.5</a>.  Control frames other than close are not restricted.  </p>
 <p id="rfc.section.3.2.p.2">Unless noted in text, the word "message" will mean a WebSocket message composed of text data frames.  </p>
 <h1 id="rfc.section.3.3"><a href="#rfc.section.3.3">3.3.</a> <a href="#setup" id="setup">XMPP Stream Setup</a></h1>
-<p id="rfc.section.3.3.p.1">The first message sent after the handshake is complete MUST be an &lt;open /&gt; element using the "http://etherx.jabber.org/streams" namespace, whose attributes mirror those in the XMPP opening stream tag as defined in XMPP <a href="#RFC6120">[RFC6120]</a>. The '&lt;' character of the open tag MUST be the first character of the text payload.  </p>
+<p id="rfc.section.3.3.p.1">The first message sent after the handshake is complete MUST be an &lt;open /&gt; element using the "urn:ietf:params:xml:ns:xmpp-framing" namespace, whose attributes mirror those in the XMPP opening stream tag as defined in XMPP <a href="#RFC6120">[RFC6120]</a>. The '&lt;' character of the open tag MUST be the first character of the text payload.  </p>
 <p id="rfc.section.3.3.p.2">The server MUST respond with an &lt;open /&gt; element, or a &lt;close /&gt; element (see <a href="#see-other-uri">Section 3.5.1</a>).  </p>
 <p id="rfc.section.3.3.p.3">Clients MUST NOT attempt to multiplex XMPP streams for multiple JIDs over the same WebSocket.  </p>
 <h1 id="rfc.section.3.4"><a href="#rfc.section.3.4">3.4.</a> <a href="#errors" id="errors">Stream Errors</a></h1>
 <p id="rfc.section.3.4.p.1">Stream level errors in XMPP are terminal. Should such an error occur, the server MUST send the stream error as a complete element in a message to the client.  </p>
 <p id="rfc.section.3.4.p.2">If the error occurs during the opening of a stream, the server MUST send the initial open element response, followed by the stream level error in a second WebSocket message frame. The server MUST then close the connection as specified in <a href="#closing">Section 3.5</a>.  </p>
 <h1 id="rfc.section.3.5"><a href="#rfc.section.3.5">3.5.</a> <a href="#closing" id="closing">Closing the Connection</a></h1>
-<p id="rfc.section.3.5.p.1">Either the server or the client may close the connection at any time. Before closing the connection, the closing party SHOULD close the XMPP stream, if it has been established, by sending a message with the &lt;close /&gt; element, qualified by the "http://etherx.jabber.org/streams" namespace. The stream is considered closed when a corresponding &lt;close/&gt; element is received from the other party.  </p>
+<p id="rfc.section.3.5.p.1">Either the server or the client may close the connection at any time. Before closing the connection, the closing party SHOULD close the XMPP stream, if it has been established, by sending a message with the &lt;close /&gt; element, qualified by the "urn:ietf:params:xml:ns:xmpp-framing" namespace. The stream is considered closed when a corresponding &lt;close/&gt; element is received from the other party.  </p>
 <p id="rfc.section.3.5.p.2">To initiate closing the WebSocket connection, the closing party MUST send a normal WebSocket close message with an empty body. The connection is considered closed when a matching close message is received (see Section 1.4 of <a href="#RFC6455">[RFC6455]</a>).  </p>
 <p>An example of ending an XMPP over WebSocket session by first closing the XMPP stream layer and then the WebSocket connection layer: </p>
 <pre>
 Client                         (XMPP WSS)                      Server
 |  |                                                             |  |
-|  | &lt;close xmlns="http://etherx.jabber.org/streams /&gt;           |  |
+|  | &lt;close xmlns="urn:ietf:params:xml:ns:xmpp-framing /&gt;        |  |
 |  |------------------------------------------------------------&gt;|  |
-|  |          &lt;close xmlns="http://etherx.jabber.org/streams" /&gt; |  |
+|  |       &lt;close xmlns="urn:ietf:params:xml:ns:xmpp-framing" /&gt; |  |
 |  |&lt;------------------------------------------------------------|  |
 |  |                                                             |  |
 |  |                      (XMPP Stream Closed)                   |  |
@@ -565,17 +565,17 @@ Client                         (XMPP WSS)                      Server
 </pre>
 <p id="rfc.section.3.5.p.3">If a client closes the WebSocket connection without closing the XMPP stream after having enabled stream management (see <a href="#sm">Section 3.10</a>), the server SHOULD keep the XMPP session alive for a period of time based on server policy, as specified in <a href="#XEP-0198">[XEP-0198]</a>. If the client has not negotiated the use of <a href="#XEP-0198">[XEP-0198]</a>, there is no distinction between a stream that was closed as described above and a simple disconnection; the stream is then considered implicitly closed and the XMPP session ended.  </p>
 <h1 id="rfc.section.3.5.1"><a href="#rfc.section.3.5.1">3.5.1.</a> <a href="#see-other-uri" id="see-other-uri">see-other-uri</a></h1>
-<p id="rfc.section.3.5.1.p.1">If the server (or an intermediate connection mananger) wishes to instruct the client to move to a different WebSocket endpoint (e.g. for load balancing purposes), the server MAY send a &lt;close /&gt; element and set the "see-other-uri" attribute to the URI of the new WebSocket endpoint.  </p>
+<p id="rfc.section.3.5.1.p.1">If the server (or a connection mananger intermediary) wishes to instruct the client to move to a different WebSocket endpoint (e.g. for load balancing purposes), the server MAY send a &lt;close /&gt; element and set the "see-other-uri" attribute to the URI of the new WebSocket endpoint.  </p>
 <p id="rfc.section.3.5.1.p.2">Clients MUST NOT accept suggested endpoints with a lower security context (e.g. moving from a "wss://" endpoint to a "ws://" endpoint).  </p>
 <p>An example of the server closing a stream and instructing the client to connect at a different WebSocket endpoint: </p>
 <pre>
-S: &lt;close xmlns="http://etherx.jabber.org/streams"
+S: &lt;close xmlns="urn:ietf:params:xml:ns:xmpp-framing"
           see-other-uri="wss://otherendpoint.example/xmpp-bind" /&gt;
 </pre>
 <h1 id="rfc.section.3.6"><a href="#rfc.section.3.6">3.6.</a> Stanzas</h1>
 <p id="rfc.section.3.6.p.1">Every XMPP stanza or other XML element sent directly over the XMPP stream (e.g. &lt;features xmlns="http://etherx.jabber.org/streams" /&gt;) MUST be sent in its own message. As such, every WebSocket text message that is received MUST be a complete and parsable XML fragment, with all relevant xmlns and xml:lang declarations specified.  </p>
 <p id="rfc.section.3.6.p.2">As it is already mandated that the content of each message is UTF-8 encoded, XML text declarations SHOULD NOT be included in messsages.  </p>
-<p>Examples of WebSocket messages that contain independently parsable XML fragments. Note that for stream features and errors, there is no parent context element providing the "stream" namespace prefix as in <a href="#RFC6120">[RFC6120]</a>, and thus the stream namespace MUST be declared: </p>
+<p>Examples of WebSocket messages that contain independently parsable XML fragments (note that for stream features and errors, there is no parent context element providing the "stream" namespace prefix as in <a href="#RFC6120">[RFC6120]</a>, and thus the stream namespace MUST be declared): </p>
 <pre>
 &lt;features xmlns="http://etherx.jabber.org/streams"&gt;
   &lt;bind xmlns="urn:ietf:params:xml:ns:xmpp-bind" /&gt;
@@ -596,7 +596,7 @@ S:  &lt;success xmlns="urn:ietf:params:xml:ns:xmpp-sasl" /&gt;
 
 [Streams implicitly closed]
 
-C: &lt;open xmlns="http://etherx.jabber.org/streams"
+C: &lt;open xmlns="urn:ietf:params:xml:ns:xmpp-framing"
          to="example.com"
          version="1.0" /&gt;
 </pre>
