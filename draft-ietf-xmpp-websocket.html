@@ -1,0 +1,769 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head profile="http://www.w3.org/2006/03/hcard http://dublincore.org/documents/2008/08/04/dc-html/">
+  <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+
+  <title>An XMPP Sub-protocol for WebSocket </title>
+
+  <style type="text/css" title="Xml2Rfc (sans serif)">
+  /*<![CDATA[*/
+	  a {
+	  text-decoration: none;
+	  }
+      /* info code from SantaKlauss at http://www.madaboutstyle.com/tooltip2.html */
+      a.info {
+          /* This is the key. */
+          position: relative;
+          z-index: 24;
+          text-decoration: none;
+      }
+      a.info:hover {
+          z-index: 25;
+          color: #FFF; background-color: #900;
+      }
+      a.info span { display: none; }
+      a.info:hover span.info {
+          /* The span will display just on :hover state. */
+          display: block;
+          position: absolute;
+          font-size: smaller;
+          top: 2em; left: -5em; width: 15em;
+          padding: 2px; border: 1px solid #333;
+          color: #900; background-color: #EEE;
+          text-align: left;
+      }
+	  a.smpl {
+	  color: black;
+	  }
+	  a:hover {
+	  text-decoration: underline;
+	  }
+	  a:active {
+	  text-decoration: underline;
+	  }
+	  address {
+	  margin-top: 1em;
+	  margin-left: 2em;
+	  font-style: normal;
+	  }
+	  body {
+	  color: black;
+	  font-family: verdana, helvetica, arial, sans-serif;
+	  font-size: 10pt;
+	  max-width: 55em;
+	  
+	  }
+	  cite {
+	  font-style: normal;
+	  }
+	  dd {
+	  margin-right: 2em;
+	  }
+	  dl {
+	  margin-left: 2em;
+	  }
+	
+	  ul.empty {
+	  list-style-type: none;
+	  }
+	  ul.empty li {
+	  margin-top: .5em;
+	  }
+	  dl p {
+	  margin-left: 0em;
+	  }
+	  dt {
+	  margin-top: .5em;
+	  }
+	  h1 {
+	  font-size: 14pt;
+	  line-height: 21pt;
+	  page-break-after: avoid;
+	  }
+	  h1.np {
+	  page-break-before: always;
+	  }
+	  h1 a {
+	  color: #333333;
+	  }
+	  h2 {
+	  font-size: 12pt;
+	  line-height: 15pt;
+	  page-break-after: avoid;
+	  }
+	  h3, h4, h5, h6 {
+	  font-size: 10pt;
+	  page-break-after: avoid;
+	  }
+	  h2 a, h3 a, h4 a, h5 a, h6 a {
+	  color: black;
+	  }
+	  img {
+	  margin-left: 3em;
+	  }
+	  li {
+	  margin-left: 2em;
+	  margin-right: 2em;
+	  }
+	  ol {
+	  margin-left: 2em;
+	  margin-right: 2em;
+	  }
+	  ol p {
+	  margin-left: 0em;
+	  }
+	  p {
+	  margin-left: 2em;
+	  margin-right: 2em;
+	  }
+	  pre {
+	  margin-left: 3em;
+	  background-color: lightyellow;
+	  padding: .25em;
+	  }
+	  pre.text2 {
+	  border-style: dotted;
+	  border-width: 1px;
+	  background-color: #f0f0f0;
+	  width: 69em;
+	  }
+	  pre.inline {
+	  background-color: white;
+	  padding: 0em;
+	  }
+	  pre.text {
+	  border-style: dotted;
+	  border-width: 1px;
+	  background-color: #f8f8f8;
+	  width: 69em;
+	  }
+	  pre.drawing {
+	  border-style: solid;
+	  border-width: 1px;
+	  background-color: #f8f8f8;
+	  padding: 2em;
+	  }
+	  table {
+	  margin-left: 2em;
+	  }
+	  table.tt {
+	  vertical-align: top;
+	  }
+	  table.full {
+	  border-style: outset;
+	  border-width: 1px;
+	  }
+	  table.headers {
+	  border-style: outset;
+	  border-width: 1px;
+	  }
+	  table.tt td {
+	  vertical-align: top;
+	  }
+	  table.full td {
+	  border-style: inset;
+	  border-width: 1px;
+	  }
+	  table.tt th {
+	  vertical-align: top;
+	  }
+	  table.full th {
+	  border-style: inset;
+	  border-width: 1px;
+	  }
+	  table.headers th {
+	  border-style: none none inset none;
+	  border-width: 1px;
+	  }
+	  table.left {
+	  margin-right: auto;
+	  }
+	  table.right {
+	  margin-left: auto;
+	  }
+	  table.center {
+	  margin-left: auto;
+	  margin-right: auto;
+	  }
+	  caption {
+	  caption-side: bottom;
+	  font-weight: bold;
+	  font-size: 9pt;
+	  margin-top: .5em;
+	  }
+	
+	  table.header {
+	  border-spacing: 1px;
+	  width: 95%;
+	  font-size: 10pt;
+	  color: white;
+	  }
+	  td.top {
+	  vertical-align: top;
+	  }
+	  td.topnowrap {
+	  vertical-align: top;
+	  white-space: nowrap; 
+	  }
+	  table.header td {
+	  background-color: gray;
+	  width: 50%;
+	  }
+	  table.header a {
+	  color: white;
+	  }
+	  td.reference {
+	  vertical-align: top;
+	  white-space: nowrap;
+	  padding-right: 1em;
+	  }
+	  thead {
+	  display:table-header-group;
+	  }
+	  ul.toc, ul.toc ul {
+	  list-style: none;
+	  margin-left: 1.5em;
+	  margin-right: 0em;
+	  padding-left: 0em;
+	  }
+	  ul.toc li {
+	  line-height: 150%;
+	  font-weight: bold;
+	  font-size: 10pt;
+	  margin-left: 0em;
+	  margin-right: 0em;
+	  }
+	  ul.toc li li {
+	  line-height: normal;
+	  font-weight: normal;
+	  font-size: 9pt;
+	  margin-left: 0em;
+	  margin-right: 0em;
+	  }
+	  li.excluded {
+	  font-size: 0pt;
+	  }
+	  ul p {
+	  margin-left: 0em;
+	  }
+	
+	  .comment {
+	  background-color: yellow;
+	  }
+	  .center {
+	  text-align: center;
+	  }
+	  .error {
+	  color: red;
+	  font-style: italic;
+	  font-weight: bold;
+	  }
+	  .figure {
+	  font-weight: bold;
+	  text-align: center;
+	  font-size: 9pt;
+	  }
+	  .filename {
+	  color: #333333;
+	  font-weight: bold;
+	  font-size: 12pt;
+	  line-height: 21pt;
+	  text-align: center;
+	  }
+	  .fn {
+	  font-weight: bold;
+	  }
+	  .hidden {
+	  display: none;
+	  }
+	  .left {
+	  text-align: left;
+	  }
+	  .right {
+	  text-align: right;
+	  }
+	  .title {
+	  color: #990000;
+	  font-size: 18pt;
+	  line-height: 18pt;
+	  font-weight: bold;
+	  text-align: center;
+	  margin-top: 36pt;
+	  }
+	  .vcardline {
+	  display: block;
+	  }
+	  .warning {
+	  font-size: 14pt;
+	  background-color: yellow;
+	  }
+	
+	
+	  @media print {
+	  .noprint {
+		display: none;
+	  }
+	
+	  a {
+		color: black;
+		text-decoration: none;
+	  }
+	
+	  table.header {
+		width: 90%;
+	  }
+	
+	  td.header {
+		width: 50%;
+		color: black;
+		background-color: white;
+		vertical-align: top;
+		font-size: 12pt;
+	  }
+	
+	  ul.toc a::after {
+		content: leader('.') target-counter(attr(href), page);
+	  }
+	
+	  ul.ind li li a {
+		content: target-counter(attr(href), page);
+	  }
+	
+	  .print2col {
+		column-count: 2;
+		-moz-column-count: 2;
+		column-fill: auto;
+	  }
+	  }
+	
+	  @page {
+	  @top-left {
+		   content: "Internet-Draft"; 
+	  } 
+	  @top-right {
+		   content: "December 2010"; 
+	  } 
+	  @top-center {
+		   content: "Abbreviated Title";
+	  } 
+	  @bottom-left {
+		   content: "Doe"; 
+	  } 
+	  @bottom-center {
+		   content: "Expires June 2011"; 
+	  } 
+	  @bottom-right {
+		   content: "[Page " counter(page) "]"; 
+	  } 
+	  }
+	
+	  @page:first { 
+		@top-left {
+		  content: normal;
+		}
+		@top-right {
+		  content: normal;
+		}
+		@top-center {
+		  content: normal;
+		}
+	  }
+  /*]]>*/
+  </style>
+
+  <link href="#rfc.toc" rel="Contents"/>
+<link href="#rfc.section.1" rel="Chapter" title="1 Introduction"/>
+<link href="#rfc.section.2" rel="Chapter" title="2 Terminology"/>
+<link href="#rfc.section.3" rel="Chapter" title="3 XMPP Sub-Protocol"/>
+<link href="#rfc.section.3.1" rel="Chapter" title="3.1 Handshake"/>
+<link href="#rfc.section.3.2" rel="Chapter" title="3.2 Messages"/>
+<link href="#rfc.section.3.3" rel="Chapter" title="3.3 XMPP Stream Setup"/>
+<link href="#rfc.section.3.4" rel="Chapter" title="3.4 Stream Errors"/>
+<link href="#rfc.section.3.5" rel="Chapter" title="3.5 Closing the Connection"/>
+<link href="#rfc.section.3.5.1" rel="Chapter" title="3.5.1 see-other-uri"/>
+<link href="#rfc.section.3.6" rel="Chapter" title="3.6 Stanzas"/>
+<link href="#rfc.section.3.7" rel="Chapter" title="3.7 Stream Restarts"/>
+<link href="#rfc.section.3.8" rel="Chapter" title="3.8 Pings and Keepalives"/>
+<link href="#rfc.section.3.9" rel="Chapter" title="3.9 Use of TLS"/>
+<link href="#rfc.section.3.10" rel="Chapter" title="3.10 Stream Management"/>
+<link href="#rfc.section.4" rel="Chapter" title="4 Discovering Connection Method"/>
+<link href="#rfc.section.5" rel="Chapter" title="5 Security Considerations"/>
+<link href="#rfc.section.6" rel="Chapter" title="6 IANA Considerations"/>
+<link href="#rfc.references" rel="Chapter" title="7 Informative References"/>
+<link href="#rfc.authors" rel="Chapter"/>
+
+
+  <meta name="generator" content="xml2rfc version 2.4.5 - http://tools.ietf.org/tools/xml2rfc" />
+  <link rel="schema.dct" href="http://purl.org/dc/terms/" />
+
+  <meta name="dct.creator" content="Stout, L., Ed., Moffitt, J., and E. Cestari" />
+  <meta name="dct.identifier" content="urn:ietf:id:draft-ietf-xmpp-websocket-01" />
+  <meta name="dct.issued" scheme="ISO8601" content="2014-2-12" />
+  <meta name="dct.abstract" content="This document defines a binding for the XMPP protocol over a WebSocket transport layer. A WebSocket binding for XMPP provides higher performance than the current HTTP binding for XMPP.  " />
+  <meta name="description" content="This document defines a binding for the XMPP protocol over a WebSocket transport layer. A WebSocket binding for XMPP provides higher performance than the current HTTP binding for XMPP.  " />
+
+</head>
+
+<body>
+
+  <table class="header">
+    <tbody>
+    
+    	<tr>
+  <td class="left">XMPP Working Group</td>
+  <td class="right">L. Stout, Ed.</td>
+</tr>
+<tr>
+  <td class="left">Internet-Draft</td>
+  <td class="right">&amp;yet</td>
+</tr>
+<tr>
+  <td class="left">Intended status: Standards Track</td>
+  <td class="right">J. Moffitt</td>
+</tr>
+<tr>
+  <td class="left">Expires: August 16, 2014</td>
+  <td class="right">Mozilla</td>
+</tr>
+<tr>
+  <td class="left"></td>
+  <td class="right">E. Cestari</td>
+</tr>
+<tr>
+  <td class="left"></td>
+  <td class="right">cstar industries</td>
+</tr>
+<tr>
+  <td class="left"></td>
+  <td class="right">February 12, 2014</td>
+</tr>
+
+    	
+    </tbody>
+  </table>
+
+  <p class="title">An XMPP Sub-protocol for WebSocket <br />
+  <span class="filename">draft-ietf-xmpp-websocket-01</span></p>
+  
+  <h1 id="rfc.abstract">
+  <a href="#rfc.abstract">Abstract</a>
+</h1>
+<p>This document defines a binding for the XMPP protocol over a WebSocket transport layer. A WebSocket binding for XMPP provides higher performance than the current HTTP binding for XMPP.  </p>
+<h1 id="rfc.status">
+  <a href="#rfc.status">Status of This Memo</a>
+</h1>
+<p>This Internet-Draft is submitted in full conformance with the provisions of BCP 78 and BCP 79.</p>
+<p>Internet-Drafts are working documents of the Internet Engineering Task Force (IETF).  Note that other groups may also distribute working documents as Internet-Drafts.  The list of current Internet-Drafts is at http://datatracker.ietf.org/drafts/current/.</p>
+<p>Internet-Drafts are draft documents valid for a maximum of six months and may be updated, replaced, or obsoleted by other documents at any time.  It is inappropriate to use Internet-Drafts as reference material or to cite them other than as "work in progress."</p>
+<p>This Internet-Draft will expire on August 16, 2014.</p>
+<h1 id="rfc.copyrightnotice">
+  <a href="#rfc.copyrightnotice">Copyright Notice</a>
+</h1>
+<p>Copyright (c) 2014 IETF Trust and the persons identified as the document authors.  All rights reserved.</p>
+<p>This document is subject to BCP 78 and the IETF Trust's Legal Provisions Relating to IETF Documents (http://trustee.ietf.org/license-info) in effect on the date of publication of this document.  Please review these documents carefully, as they describe your rights and restrictions with respect to this document.  Code Components extracted from this document must include Simplified BSD License text as described in Section 4.e of the Trust Legal Provisions and are provided without warranty as described in the Simplified BSD License.</p>
+
+  
+  <hr class="noprint" />
+  <h1 class="np" id="rfc.toc"><a href="#rfc.toc">Table of Contents</a></h1>
+  <ul class="toc">
+
+  	<li>1.   <a href="#rfc.section.1">Introduction</a></li>
+<li>2.   <a href="#rfc.section.2">Terminology</a></li>
+<li>3.   <a href="#rfc.section.3">XMPP Sub-Protocol</a></li>
+<li>3.1.   <a href="#rfc.section.3.1">Handshake</a></li>
+<li>3.2.   <a href="#rfc.section.3.2">Messages</a></li>
+<li>3.3.   <a href="#rfc.section.3.3">XMPP Stream Setup</a></li>
+<li>3.4.   <a href="#rfc.section.3.4">Stream Errors</a></li>
+<li>3.5.   <a href="#rfc.section.3.5">Closing the Connection</a></li>
+<li>3.5.1.   <a href="#rfc.section.3.5.1">see-other-uri</a></li>
+<li>3.6.   <a href="#rfc.section.3.6">Stanzas</a></li>
+<li>3.7.   <a href="#rfc.section.3.7">Stream Restarts</a></li>
+<li>3.8.   <a href="#rfc.section.3.8">Pings and Keepalives</a></li>
+<li>3.9.   <a href="#rfc.section.3.9">Use of TLS</a></li>
+<li>3.10.   <a href="#rfc.section.3.10">Stream Management</a></li>
+<li>4.   <a href="#rfc.section.4">Discovering Connection Method</a></li>
+<li>5.   <a href="#rfc.section.5">Security Considerations</a></li>
+<li>6.   <a href="#rfc.section.6">IANA Considerations</a></li>
+<li>7.   <a href="#rfc.references">Informative References</a></li>
+<li><a href="#rfc.authors">Authors' Addresses</a></li>
+
+
+  </ul>
+
+  <h1 id="rfc.section.1"><a href="#rfc.section.1">1.</a> <a href="#intro" id="intro">Introduction</a></h1>
+<p id="rfc.section.1.p.1">Applications using XMPP (see <a href="#RFC6120">[RFC6120]</a> and <a href="#RFC6121">[RFC6121]</a>) on the Web currently make use of BOSH (see <a href="#XEP-0124">[XEP-0124]</a> and <a href="#XEP-0206">[XEP-0206]</a>), an XMPP binding to HTTP. BOSH is based on the HTTP long polling technique, and it suffers from high transport overhead compared to XMPP's native binding to TCP. In addition, there are a number of other known issues with long polling <a href="#RFC6202">[RFC6202]</a>, which have an impact on BOSH-based systems.  </p>
+<p id="rfc.section.1.p.2">It would be much better in most circumstances to avoid tunneling XMPP over HTTP long polled connections and instead use the XMPP protocol directly. However, the APIs and sandbox that browsers have provided do not allow this. The WebSocket protocol <a href="#RFC6455">[RFC6455]</a> now exists to solve these kinds of problems. The WebSocket protocol is a bi-directional protocol that provides a simple message-based framing layer over raw sockets and allows for more robust and efficient communication in web applications.  </p>
+<p id="rfc.section.1.p.3">The WebSocket protocol enables two-way communication between a client and a server, effectively emulating TCP at the application layer and therefore overcoming many of the problems with existing long-polling techniques for bidirectional HTTP. This document defines a WebSocket sub-protocol for the Extensible Messaging and Presence Protocol (XMPP).  </p>
+<h1 id="rfc.section.2"><a href="#rfc.section.2">2.</a> Terminology</h1>
+<p id="rfc.section.2.p.1">The basic unit of framing in the WebSocket protocol is called a message. In XMPP, the basic unit is the stanza, which is a subset of the first-level children of each document in an XMPP stream (see Section 9 of <a href="#RFC6120">[RFC6120]</a>). XMPP also has a concept of messages, which are stanzas whose top-level element name is message. In this document, the word "message" will mean a WebSocket message, not an XMPP message stanza (see <a href="#messages">Section 3.2</a>).  </p>
+<p id="rfc.section.2.p.2">The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <a href="#RFC2119">[RFC2119]</a>.  </p>
+<h1 id="rfc.section.3"><a href="#rfc.section.3">3.</a> XMPP Sub-Protocol</h1>
+<h1 id="rfc.section.3.1"><a href="#rfc.section.3.1">3.1.</a> Handshake</h1>
+<p id="rfc.section.3.1.p.1">The XMPP sub-protocol is used to transport XMPP over a WebSocket connection. The client and server agree to this protocol during the WebSocket handshake (see Section 1.3 of <a href="#RFC6455">[RFC6455]</a>).  </p>
+<p id="rfc.section.3.1.p.2">During the WebSocket handshake, the client MUST include the |Sec-WebSocket-Protocol| header in its handshake, and the value |xmpp| MUST be included in the list of protocols. The reply from the server MUST also contain |xmpp| in its own |Sec-WebSocket-Protocol| header in order for an XMPP sub-protocol connection to be established.  </p>
+<p id="rfc.section.3.1.p.3">Once the handshake is complete, WebSocket messages sent or received will conform to the protocol defined in the rest of this document.  </p>
+<pre>
+C:  GET /xmpp-websocket HTTP/1.1
+    Host: example.com
+    Upgrade: websocket
+    Connection: Upgrade
+    Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==
+    Origin: http://example.com
+    ...
+    Sec-WebSocket-Protocol: xmpp
+    Sec-WebSocket-Version: 13
+
+
+S:  HTTP/1.1 101 Switching Protocols
+    Upgrade: websocket
+    Connection: Upgrade
+    ...
+    Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
+    Sec-WebSocket-Protocol: xmpp
+
+[WebSocket connection established]
+
+C:  &lt;open xmlns="http://etherx.jabber.org/streams"
+          to="example.com"
+          version="1.0" /&gt;
+</pre>
+<p/>
+<h1 id="rfc.section.3.2"><a href="#rfc.section.3.2">3.2.</a> <a href="#messages" id="messages">Messages</a></h1>
+<p id="rfc.section.3.2.p.1">Data frame messages in the XMPP sub-protocol MUST be of the text type and contain UTF-8 encoded data. The close control frame's contents are specified in <a href="#closing">Section 3.5</a>.  Control frames other than close are not restricted.  </p>
+<p id="rfc.section.3.2.p.2">Unless noted in text, the word "message" will mean a WebSocket message composed of text data frames.  </p>
+<h1 id="rfc.section.3.3"><a href="#rfc.section.3.3">3.3.</a> <a href="#setup" id="setup">XMPP Stream Setup</a></h1>
+<p id="rfc.section.3.3.p.1">The first message sent after the handshake is complete MUST be an &lt;open /&gt; element using the "http://etherx.jabber.org/streams" namespace, whose attributes mirror those in the XMPP opening stream tag as defined in XMPP <a href="#RFC6120">[RFC6120]</a>. The '&lt;' character of the open tag MUST be the first character of the text payload.  </p>
+<p id="rfc.section.3.3.p.2">The server MUST respond with an &lt;open /&gt; element, or a &lt;close /&gt; element (see <a href="#see-other-uri">Section 3.5.1</a>).  </p>
+<p id="rfc.section.3.3.p.3">Clients MUST NOT attempt to multiplex XMPP streams for multiple JIDs over the same WebSocket.  </p>
+<h1 id="rfc.section.3.4"><a href="#rfc.section.3.4">3.4.</a> <a href="#errors" id="errors">Stream Errors</a></h1>
+<p id="rfc.section.3.4.p.1">Stream level errors in XMPP are terminal. Should such an error occur, the server MUST send the stream error as a complete element in a message to the client.  </p>
+<p id="rfc.section.3.4.p.2">If the error occurs during the opening of a stream, the server MUST send the initial open element response, followed by the stream level error in a second WebSocket message frame. The server MUST then close the connection as specified in <a href="#closing">Section 3.5</a>.  </p>
+<h1 id="rfc.section.3.5"><a href="#rfc.section.3.5">3.5.</a> <a href="#closing" id="closing">Closing the Connection</a></h1>
+<p id="rfc.section.3.5.p.1">Either the server or the client may close the connection at any time. Before closing the connection, the closing party SHOULD close the XMPP stream, if it has been established, by sending a message with the &lt;close /&gt; element, qualified by the "http://etherx.jabber.org/streams" namespace. The stream is considered closed when a corresponding &lt;close/&gt; element is received from the other party.  </p>
+<p id="rfc.section.3.5.p.2">To initiate closing the WebSocket connection, the closing party MUST send a normal WebSocket close message with an empty body. The connection is considered closed when a matching close message is received (see Section 1.4 of <a href="#RFC6455">[RFC6455]</a>).  </p>
+<p>An example of ending an XMPP over WebSocket session by first closing the XMPP stream layer and then the WebSocket connection layer: </p>
+<pre>
+Client                         (XMPP WSS)                      Server
+|  |                                                             |  |
+|  | &lt;close xmlns="http://etherx.jabber.org/streams /&gt;           |  |
+|  |------------------------------------------------------------&gt;|  |
+|  |          &lt;close xmlns="http://etherx.jabber.org/streams" /&gt; |  |
+|  |&lt;------------------------------------------------------------|  |
+|  |                                                             |  |
+|  |                      (XMPP Stream Closed)                   |  |
+|  +-------------------------------------------------------------+  |
+|                                                                   |
+| WS CLOSE FRAME                                                    |
+|------------------------------------------------------------------&gt;|
+|                                                    WS CLOSE FRAME |
+|&lt;------------------------------------------------------------------|
+|                                                                   |
+|                         (Connection Closed)                       |
++-------------------------------------------------------------------+
+</pre>
+<p id="rfc.section.3.5.p.3">If a client closes the WebSocket connection without closing the XMPP stream after having enabled stream management (see <a href="#sm">Section 3.10</a>), the server SHOULD keep the XMPP session alive for a period of time based on server policy, as specified in <a href="#XEP-0198">[XEP-0198]</a>. If the client has not negotiated the use of <a href="#XEP-0198">[XEP-0198]</a>, there is no distinction between a stream that was closed as described above and a simple disconnection; the stream is then considered implicitly closed and the XMPP session ended.  </p>
+<h1 id="rfc.section.3.5.1"><a href="#rfc.section.3.5.1">3.5.1.</a> <a href="#see-other-uri" id="see-other-uri">see-other-uri</a></h1>
+<p id="rfc.section.3.5.1.p.1">If the server (or an intermediate connection mananger) wishes to instruct the client to move to a different WebSocket endpoint (e.g. for load balancing purposes), the server MAY send a &lt;close /&gt; element and set the "see-other-uri" attribute to the URI of the new WebSocket endpoint.  </p>
+<p id="rfc.section.3.5.1.p.2">Clients MUST NOT accept suggested endpoints with a lower security context (e.g. moving from a "wss://" endpoint to a "ws://" endpoint).  </p>
+<p>An example of the server closing a stream and instructing the client to connect at a different WebSocket endpoint: </p>
+<pre>
+S: &lt;close xmlns="http://etherx.jabber.org/streams"
+          see-other-uri="wss://otherendpoint.example/xmpp-bind" /&gt;
+</pre>
+<h1 id="rfc.section.3.6"><a href="#rfc.section.3.6">3.6.</a> Stanzas</h1>
+<p id="rfc.section.3.6.p.1">Every XMPP stanza or other XML element sent directly over the XMPP stream (e.g. &lt;features xmlns="http://etherx.jabber.org/streams" /&gt;) MUST be sent in its own message. As such, every WebSocket text message that is received MUST be a complete and parsable XML fragment, with all relevant xmlns and xml:lang declarations specified.  </p>
+<p id="rfc.section.3.6.p.2">As it is already mandated that the content of each message is UTF-8 encoded, XML text declarations SHOULD NOT be included in messsages.  </p>
+<p>Examples of WebSocket messages that contain independently parsable XML fragments. Note that for stream features and errors, there is no parent context element providing the "stream" namespace prefix as in <a href="#RFC6120">[RFC6120]</a>, and thus the stream namespace MUST be declared: </p>
+<pre>
+&lt;features xmlns="http://etherx.jabber.org/streams"&gt;
+  &lt;bind xmlns="urn:ietf:params:xml:ns:xmpp-bind" /&gt;
+&lt;/features&gt;
+---------------------------------------------------------------------
+&lt;error xmlns="http://etherx.jabber.org/streams"&gt;
+  &lt;host-unknown xmlns='urn:ietf:params:xml:ns:xmpp-streams'/&gt;
+&lt;/error&gt;
+---------------------------------------------------------------------
+&lt;message xmlns="jabber:client" xml:lang="en"&gt;
+  &lt;body&gt;Every WebSocket message is parsable by itself.&lt;/body&gt;
+&lt;/message&gt;
+</pre>
+<h1 id="rfc.section.3.7"><a href="#rfc.section.3.7">3.7.</a> Stream Restarts</h1>
+<p id="rfc.section.3.7.p.1">After successful SASL authentication, an XMPP stream needs to be restarted. In these cases, as soon as the message is sent (or received) containing the success indication, both the server and client streams are implicitly closed, and new streams need to be opened. The client MUST open a new stream as in <a href="#setup">Section 3.3</a> and MUST NOT send a closing &lt;close /&gt; element.  </p>
+<pre>
+S:  &lt;success xmlns="urn:ietf:params:xml:ns:xmpp-sasl" /&gt;
+
+[Streams implicitly closed]
+
+C: &lt;open xmlns="http://etherx.jabber.org/streams"
+         to="example.com"
+         version="1.0" /&gt;
+</pre>
+<h1 id="rfc.section.3.8"><a href="#rfc.section.3.8">3.8.</a> Pings and Keepalives</h1>
+<p id="rfc.section.3.8.p.1">XMPP servers send whitespace pings as keepalives between stanzas, and XMPP clients can do the same as these extra whitespace characters are not significant in the protocol.  Servers and clients SHOULD use WebSocket ping control frames instead for this purpose.  </p>
+<p id="rfc.section.3.8.p.2">In some cases, the WebSocket connection might be served by an intermediary connection manager and not the XMPP server.  In these situations, the use of WebSocket ping messages are insufficient to test that the XMPP stream is still alive.  Both the XMPP Ping extension <a href="#XEP-0199">[XEP-0199]</a> and the XMPP Stream Management extension <a href="#XEP-0198">[XEP-0198]</a> provide mechanisms to ping the XMPP server, and either extension (or both) MAY be used to determine the state of the connection.  </p>
+<h1 id="rfc.section.3.9"><a href="#rfc.section.3.9">3.9.</a> <a href="#tls" id="tls">Use of TLS</a></h1>
+<p id="rfc.section.3.9.p.1">TLS cannot be used at the XMPP sub-protocol layer because the sub-protocol does not allow for raw binary data to be sent.  Instead, enabling TLS SHOULD be done at the WebSocket layer using secure WebSocket connections via the |wss| URI scheme.  (See Section 10.6 of <a href="#RFC6455">[RFC6455]</a>).  </p>
+<p id="rfc.section.3.9.p.2">Because TLS is to be provided outside of the XMPP sub-protocol layer, a server MUST NOT advertise TLS as a stream feature (see Section 4.6 of <a href="#RFC6120">[RFC6120]</a>), and a client MUST ignore any advertised TLS stream feature, when using the XMPP sub-protocol.  </p>
+<h1 id="rfc.section.3.10"><a href="#rfc.section.3.10">3.10.</a> <a href="#sm" id="sm">Stream Management</a></h1>
+<p id="rfc.section.3.10.p.1">In order to alleviate the problems of temporary disconnections, the XMPP Stream Management extension <a href="#XEP-0198">[XEP-0198]</a> MAY be used to confirm when stanzas have been received by the server.  </p>
+<p id="rfc.section.3.10.p.2">In particular, the use of session resumption in <a href="#XEP-0198">[XEP-0198]</a> MAY be used to allow for recreating the same stream session state after a temporary network unavailability or after navigating to a new URL in a browser.  </p>
+<h1 id="rfc.section.4"><a href="#rfc.section.4">4.</a> Discovering Connection Method</h1>
+<p id="rfc.section.4.p.1">The XMPP extension Discovering Alternate XMPP Connection Methods <a href="#XEP-0156">[XEP-0156]</a> provides mechanisms to discover the additional information needed to connect to an XMPP server outside of the procedure defined in in Section 3 of <a href="#RFC6120">[RFC6120]</a>.  </p>
+<p id="rfc.section.4.p.2">Servers MAY expose such discovery information, and clients MAY use such information to determine the WebSocket endpoint for a server.  </p>
+<p id="rfc.section.4.p.3">Use of the HTTP lookup method in <a href="#XEP-0156">[XEP-0156]</a> MAY be used to establish trust between the XMPP server domain and the WebSocket endpoint, particularly in multi-tenant situations where the same WebSocket endpoint is serving multiple XMPP domains.  </p>
+<h1 id="rfc.section.5"><a href="#rfc.section.5">5.</a> <a href="#security" id="security">Security Considerations</a></h1>
+<p id="rfc.section.5.p.1">Since application level TLS cannot be used (see <a href="#tls">Section 3.9</a>), applications which need to protect the privacy of the XMPP traffic need to do so at the WebSocket or other appropriate layer.  </p>
+<p id="rfc.section.5.p.2">Browser based applications are not able to inspect and verify at the application layer the certificate used for the WebSocket connection to ensure that it corresponds to the domain specified as the "to" address of the XMPP stream. For hosts whose domain matches the origin for the WebSocket connection, that check is already performed by the browser.  However, in situations where the domain of the XMPP server might not match the origin for the WebSocket endpoint (especially multi-tenant hosting situations), the HTTP discovery method in <a href="#XEP-0156">[XEP-0156]</a> MAY be used to delegate trust from the XMPP server domain to the WebSocket origin.  </p>
+<p id="rfc.section.5.p.3">When presented with a new WebSocket endpoint via the "see-other-uri" attribute of a &lt;close/&gt; element, clients MUST NOT accept the suggestion if the security context of the new endpoint is lower than the current one in order to prevent downgrade attacks from a "wss://" endpoint to "ws://".  </p>
+<p id="rfc.section.5.p.4">The Security Considerations for both WebSocket (see Section 10 of <a href="#RFC6455">[RFC6455]</a> and XMPP (see Section 13 of <a href="#RFC6120">[RFC6120]</a>) apply to the WebSocket XMPP sub-protocol.  </p>
+<h1 id="rfc.section.6"><a href="#rfc.section.6">6.</a> <a href="#iana" id="iana">IANA Considerations</a></h1>
+<p id="rfc.section.6.p.1">This specification requests IANA to register the WebSocket XMPP sub-protocol under the "WebSocket Subprotocol Name" Registry with the following data: </p>
+
+<dl>
+  <dt>Subprotocol Identifier:</dt>
+  <dd style="margin-left: 8">xmpp </dd>
+  <dt>Subprotocol Common Name:</dt>
+  <dd style="margin-left: 8">WebSocket Transport for the Extensible Messaging and Presence Protocol (XMPP) </dd>
+  <dt>Subprotocol Definition:</dt>
+  <dd style="margin-left: 8">RFC XXXX </dd>
+</dl>
+
+<p> </p>
+<p id="rfc.section.6.p.2">[[NOTE TO RFC EDITOR: Please change XXXX to the number assigned to this document upon publication.]] </p>
+<h1 id="rfc.references"><a href="#rfc.references">7.</a> Informative References</h1>
+<table>
+  <tbody>
+    <tr>
+      <td class="reference">
+        <b id="RFC2119">[RFC2119]</b>
+      </td>
+      <td class="top"><a href="mailto:sob@harvard.edu" title="Harvard University">Bradner, S.</a>, "<a href="http://tools.ietf.org/html/rfc2119">Key words for use in RFCs to Indicate Requirement Levels</a>", BCP 14, RFC 2119, March 1997.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC6120">[RFC6120]</b>
+      </td>
+      <td class="top"><a>Saint-Andre, P.</a>, "<a href="http://tools.ietf.org/html/rfc6120">Extensible Messaging and Presence Protocol (XMPP): Core</a>", RFC 6120, March 2011.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC6121">[RFC6121]</b>
+      </td>
+      <td class="top"><a>Saint-Andre, P.</a>, "<a href="http://tools.ietf.org/html/rfc6121">Extensible Messaging and Presence Protocol (XMPP): Instant Messaging and Presence</a>", RFC 6121, March 2011.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC6202">[RFC6202]</b>
+      </td>
+      <td class="top"><a>Loreto, S.</a>, <a>Saint-Andre, P.</a>, <a>Salsano, S.</a> and <a>G. Wilkins</a>, "<a href="http://tools.ietf.org/html/rfc6202">Known Issues and Best Practices for the Use of Long Polling and Streaming in Bidirectional HTTP</a>", RFC 6202, April 2011.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="RFC6455">[RFC6455]</b>
+      </td>
+      <td class="top"><a>Fette, I.</a> and <a>A. Melnikov</a>, "<a href="http://tools.ietf.org/html/rfc6455">The WebSocket Protocol</a>", RFC 6455, December 2011.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="XEP-0124">[XEP-0124]</b>
+      </td>
+      <td class="top"><a href="mailto:ian.paterson@clientside.co.uk">Paterson, I.</a>, <a href="mailto:dizzyd@jabber.org">Smith, D.</a>, <a href="mailto:stpeter@jabber.org">Saint-Andre, P.</a>, <a href="mailto:jack@chesspark.com">Moffitt, J.</a> and <a href="mailto:lance@andyet.com">L. Stout</a>, "<a>Bidirectional-streams Over Synchronous HTTP (BOSH)</a>", XSF XEP 0124, November 2013.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="XEP-0156">[XEP-0156]</b>
+      </td>
+      <td class="top"><a href="mailto:jhildebr@cisco.com">Hildebrand, J.</a>, <a href="mailto:stpeter@jabber.org">Saint-Andre, P.</a> and <a href="mailto:lance@andyet.com">L. Stout</a>, "<a>Discovering Alternative XMPP Connection Methods</a>", XSF XEP 0156, January 2014.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="XEP-0198">[XEP-0198]</b>
+      </td>
+      <td class="top"><a href="mailto:justin@affinix.com">Karneges, J.</a>, <a href="mailto:stpeter@jabber.org">Saint-Andre, P.</a>, <a href="mailto:jhildebr@cisco.com">Hildebrand, J.</a>, <a href="mailto:fabio.forno@gmail.com">Forno, F.</a>, <a href="mailto:dave@cridland.net">Cridland, D.</a> and <a href="mailto:mwild1@gmail.com">M. Wild</a>, "<a>Stream Management</a>", XSF XEP 0198, June 2011.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="XEP-0199">[XEP-0199]</b>
+      </td>
+      <td class="top"><a href="mailto:stpeter@jabber.org">Saint-Andre, P.</a>, "<a>XMPP Ping</a>", XSF XEP 0199, June 2009.</td>
+    </tr>
+    <tr>
+      <td class="reference">
+        <b id="XEP-0206">[XEP-0206]</b>
+      </td>
+      <td class="top"><a href="mailto:ian.paterson@clientside.co.uk">Paterson, I.</a>, <a href="mailto:stpeter@jabber.org">Saint-Andre, P.</a> and <a href="mailto:lance@andyet.com">L. Stout</a>, "<a>XMPP Over BOSH</a>", XSF XEP 0206, November 2013.</td>
+    </tr>
+  </tbody>
+</table>
+<h1 id="rfc.authors">
+  <a href="#rfc.authors">Authors' Addresses</a>
+</h1>
+<div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">Lance Stout</span> (editor)
+	  <span class="n hidden">
+		<span class="family-name">Stout</span>
+	  </span>
+	</span>
+	<span class="org vcardline">&yet</span>
+	<span class="adr">
+	  
+	  <span class="vcardline">
+		<span class="locality"></span> 
+		<span class="region"></span>
+		<span class="code"></span>
+	  </span>
+	  <span class="country-name vcardline"></span>
+	</span>
+	<span class="vcardline">EMail: <a href="mailto:lance@andyet.net">lance@andyet.net</a></span>
+
+  </address>
+</div><div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">Jack Moffitt</span> 
+	  <span class="n hidden">
+		<span class="family-name">Moffitt</span>
+	  </span>
+	</span>
+	<span class="org vcardline">Mozilla</span>
+	<span class="adr">
+	  
+	  <span class="vcardline">
+		<span class="locality"></span> 
+		<span class="region"></span>
+		<span class="code"></span>
+	  </span>
+	  <span class="country-name vcardline"></span>
+	</span>
+	<span class="vcardline">EMail: <a href="mailto:jack@metajack.im">jack@metajack.im</a></span>
+
+  </address>
+</div><div class="avoidbreak">
+  <address class="vcard">
+	<span class="vcardline">
+	  <span class="fn">Eric Cestari</span> 
+	  <span class="n hidden">
+		<span class="family-name">Cestari</span>
+	  </span>
+	</span>
+	<span class="org vcardline">cstar industries</span>
+	<span class="adr">
+	  
+	  <span class="vcardline">
+		<span class="locality"></span> 
+		<span class="region"></span>
+		<span class="code"></span>
+	  </span>
+	  <span class="country-name vcardline"></span>
+	</span>
+	<span class="vcardline">EMail: <a href="mailto:eric@cestari.info">eric@cestari.info</a></span>
+
+  </address>
+</div>
+
+</body>
+</html>
