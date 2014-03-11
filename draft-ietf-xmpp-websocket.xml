@@ -8,7 +8,7 @@
 <?rfc linkmailto="yes"?>
 <?rfc strict="yes"?>
 
-<rfc docName="draft-ietf-xmpp-websocket-01"
+<rfc docName="draft-ietf-xmpp-websocket-02"
      category="std" ipr="trust200902">
   <front>
     <title abbrev="XMPP over WebSocket">
@@ -37,7 +37,7 @@
       </address>
     </author>
 
-    <date day="12" month="February" year="2014"/>
+    <date/>
 
     <area>Applications</area>
     <workgroup>XMPP Working Group</workgroup>
@@ -60,7 +60,8 @@
   <middle>
     <section anchor="intro" title="Introduction">
       <t>
-        Applications using XMPP (see <xref target="RFC6120"/>
+        Applications using the Extensible Messaging and Presence 
+        Protocol (XMPP) (see <xref target="RFC6120"/>
         and <xref target="RFC6121"/>) on the Web currently make
         use of BOSH (see <xref target="XEP-0124"/> and 
         <xref target="XEP-0206"/>), an XMPP binding to HTTP. BOSH is 
@@ -75,8 +76,8 @@
         tunneling XMPP over HTTP long polled connections and instead
         use the XMPP protocol directly. However, the APIs and sandbox
         that browsers have provided do not allow this. The WebSocket
-        protocol <xref target="RFC6455"/> now exists to solve these
-        kinds of problems. The WebSocket protocol is a bi-directional
+        protocol <xref target="RFC6455"/> exists to solve these
+        kinds of problems. The WebSocket protocol is a bidirectional
         protocol that provides a simple message-based framing layer
         over raw sockets and allows for more robust and efficient
         communication in web applications.
@@ -87,8 +88,7 @@
         at the application layer and therefore overcoming many of
         the problems with existing long-polling techniques for
         bidirectional HTTP. This document defines a WebSocket
-        sub-protocol for the Extensible Messaging and Presence
-        Protocol (XMPP).
+        sub-protocol for XMPP.
       </t>
     </section>
 
@@ -98,10 +98,10 @@
         a message. In XMPP, the basic unit is the stanza, which is a
         subset of the first-level children of each document in an XMPP
         stream (see Section 9 of <xref target="RFC6120"/>). XMPP also
-        has a concept of messages, which are stanzas whose top-level
-        element name is message. In this document, the word "message"
-        will mean a WebSocket message, not an XMPP message stanza (see
-        <xref target="messages"/>).
+        has a concept of messages, which are stanzas with a top-level
+        element of &lt;message/&gt;. In this document, the word "message"
+        will mean a WebSocket message, not an XMPP message stanza, unless
+        otherwise noted.
       </t>
       <t>
         The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
@@ -170,17 +170,13 @@ C:  <open xmlns="urn:ietf:params:xml:ns:xmpp-framing"
           frame's contents are specified in <xref target="closing"/>. 
           Control frames other than close are not restricted.
         </t>
-        <t>
-          Unless noted in text, the word "message" will mean a
-          WebSocket message composed of text data frames.
-        </t>
       </section>
 
       <section title="XMPP Stream Setup" anchor="setup">
         <t>
           The first message sent after the handshake is complete MUST
-          be an &lt;open /&gt; element using the "urn:ietf:params:xml:ns:xmpp-framing"
-          namespace, whose 'from', 'id', 'to' and 'version' attributes mirror those in the XMPP
+          be an &lt;open/&gt; element qualified by the "urn:ietf:params:xml:ns:xmpp-framing"
+          namespace.  The 'from', 'id', 'to', and 'version' attributes of this element mirror those of the XMPP
           opening stream tag as defined for the 'http://etherx.jabber.org/streams' namespace in XMPP <xref
           target="RFC6120"/>. The '&lt;' character of the open tag
           MUST be the first character of the text payload.
@@ -214,7 +210,7 @@ C:  <open xmlns="urn:ietf:params:xml:ns:xmpp-framing"
           Either the server or the client may close the connection at any
           time. Before closing the connection, the closing party SHOULD
           close the XMPP stream, if it has been established, by sending a
-          message with the &lt;close /&gt; element, qualified by
+          message with the &lt;close/&gt; element, qualified by
           the "urn:ietf:params:xml:ns:xmpp-framing" namespace. The
           stream is considered closed when a corresponding &lt;close/&gt;
           element is received from the other party.
@@ -267,7 +263,7 @@ Client                         (XMPP WSS)                      Server
           <t>
             If the server (or a connection mananger intermediary) wishes to instruct
             the client to move to a different WebSocket endpoint (e.g. for load balancing
-            purposes), the server MAY send a &lt;close /&gt; element and set the
+            purposes), the server MAY send a &lt;close/&gt; element and set the
             "see-other-uri" attribute to the URI of the new WebSocket endpoint.
           </t>
           <t>
@@ -290,7 +286,7 @@ S: <close xmlns="urn:ietf:params:xml:ns:xmpp-framing"
       <section title="Stanzas">
         <t>
           Every XMPP stanza or other XML element sent directly over
-          the XMPP stream (e.g. &lt;features xmlns="http://etherx.jabber.org/streams" /&gt;)
+          the XMPP stream (e.g. &lt;features xmlns="http://etherx.jabber.org/streams"/&gt;)
           MUST be sent in its own message. As such, every WebSocket text
           message that is received MUST be a complete
           and parsable XML fragment, with all relevant xmlns and xml:lang
@@ -299,7 +295,7 @@ S: <close xmlns="urn:ietf:params:xml:ns:xmpp-framing"
         <t>
           As it is already mandated that the content of each message is
           UTF-8 encoded, XML text declarations SHOULD NOT be included
-          in messsages.
+          in messages.
         </t>
         <figure>
           <preamble>
@@ -311,7 +307,7 @@ S: <close xmlns="urn:ietf:params:xml:ns:xmpp-framing"
           </preamble>
           <artwork><![CDATA[
 <features xmlns="http://etherx.jabber.org/streams">
-  <bind xmlns="urn:ietf:params:xml:ns:xmpp-bind" />
+  <bind xmlns="urn:ietf:params:xml:ns:xmpp-bind"/>
 </features>
 
 <error xmlns="http://etherx.jabber.org/streams">
@@ -333,7 +329,7 @@ S: <close xmlns="urn:ietf:params:xml:ns:xmpp-framing"
           the server and client streams are implicitly closed, and
           new streams need to be opened. The client MUST open a new
           stream as in <xref target="setup"/> and MUST NOT send a
-          closing &lt;close /&gt; element.
+          closing &lt;close/&gt; element.
         </t>
         <figure>
           <artwork><![CDATA[
@@ -349,8 +345,9 @@ C: <open xmlns="urn:ietf:params:xml:ns:xmpp-framing"
 
       <section title="Pings and Keepalives">
         <t>
-          XMPP servers send whitespace pings as keepalives between
-          stanzas, and XMPP clients can do the same as these extra
+          XMPP servers often send "whitespace keepalives" (see Section 4.6.1 
+          of <xref target='RFC6120'/>) between stanzas to maintain an XML
+          stream, and XMPP clients can do the same as these extra
           whitespace characters are not significant in the protocol.
           Servers and clients SHOULD use WebSocket ping control
           frames instead for this purpose.
@@ -373,7 +370,7 @@ C: <open xmlns="urn:ietf:params:xml:ns:xmpp-framing"
           sub-protocol does not allow for raw binary data to be sent.
           Instead, enabling TLS SHOULD be done at the WebSocket layer
           using secure WebSocket connections via the |wss| URI scheme.
-          (See Section 10.6 of <xref target="RFC6455"/>).
+          (See Section 10.6 of <xref target="RFC6455"/>.)
         </t>
         <t>
           Because TLS is to be provided outside of the XMPP
@@ -400,22 +397,42 @@ C: <open xmlns="urn:ietf:params:xml:ns:xmpp-framing"
       </section>
     </section>
 
-    <section title="Discovering Connection Method">
+    <section title="Discovering the WebSocket Connection Method">
       <t>
-        The XMPP extension Discovering Alternate XMPP Connection Methods
-        <xref target="XEP-0156"/> provides mechanisms to discover
-        the additional information needed to connect to an XMPP server
-        outside of the procedure defined in in Section 3 of
-        <xref target="RFC6120"/>.
+        Section 3 of <xref target="RFC6120"/> defines a procedure for
+        connecting to an XMPP server, including ways to discover the
+        TCP/IP address and port of the server.  When using the WebSocket 
+        binding as specified in this document (instead of the 
+        TCP binding as specified in <xref target="RFC6120"/>), a client
+        needs an alternative way to discover information about the 
+        server's connection methods, since web browsers and other 
+        WebSocket-capable software applications typically cannot obtain 
+        such information from the Domain Name System.
       </t>
       <t>
-        Servers MAY expose such discovery information, and clients MAY
-        use such information to determine the WebSocket endpoint for a server.
+        The alternative lookup process uses Web Host Metadata 
+        <xref target='RFC6415'/> and Web Linking <xref target='RFC5988'/>, 
+        where the link relation type is "urn:xmpp:alt-connections:websocket" 
+        as described in Discovering Alternate XMPP Connection Methods 
+        <xref target="XEP-0156"/>. An example follows.
+      </t>
+      <figure>
+        <artwork><![CDATA[
+<XRD xmlns='http://docs.oasis-open.org/ns/xri/xrd-1.0'>
+  <Link rel="urn:xmpp:alt-connections:websocket"
+        href="wss://webcm.example.net:443/ws" />
+</XRD>
+        ]]></artwork>
+      </figure>
+      <t>
+        Servers MAY expose discovery information using host-meta documents, 
+        and clients MAY use such information to determine the WebSocket 
+        endpoint for a server.
       </t>
       <t>
-        Use of the HTTP lookup method in <xref target="XEP-0156"/> MAY be used
-        to establish trust between the XMPP server domain and the WebSocket endpoint,
-        particularly in multi-tenant situations where the same WebSocket endpoint is
+        Use of web-host metadata MAY be used to establish trust between the 
+        XMPP server domain and the WebSocket endpoint, particularly in 
+        multi-tenant situations where the same WebSocket endpoint is
         serving multiple XMPP domains.
       </t>
     </section>
@@ -435,32 +452,29 @@ C: <open xmlns="urn:ietf:params:xml:ns:xmpp-framing"
               Presence Protocol (XMPP)
             </t>
             <t hangText="Subprotocol Definition:">
-              RFC XXXX
+              this document
             </t>
           </list>
         </t>
-        <t>[[ NOTE TO RFC EDITOR: Please replace "XXXX" with the number assigned to this document upon publication as an RFC. ]]</t>
       </section>
       <section anchor="iana-ns" title="URN Sub-Namespace">
         <t>A URN sub-namespace for framing of Extensible Messaging and Presence Protocol (XMPP) streams is defined as follows.</t>
         <t>
           <list style='hanging'>
             <t hangText='URI:'>urn:ietf:params:xml:ns:xmpp-framing</t>
-            <t hangText='Specification:'>RFC XXXX</t>
+            <t hangText='Specification:'>this document</t>
             <t hangText='Description:'>This is the XML namespace name for framing of Extensible Messaging and Presence Protocol (XMPP) streams as defined by RFC XXXX.</t>
             <t hangText='Registrant Contact:'>IESG &lt;iesg@ietf.org&gt;</t>
           </list>
         </t>
-        <t>[[ NOTE TO RFC EDITOR: Please replace "XXXX" with the number assigned to this document upon publication as an RFC. ]]</t>
       </section>
     </section>
 
     <section anchor="security" title="Security Considerations">
       <t>
         Since application level TLS cannot be used (see <xref
-        target="tls"/>), applications which need to protect the privacy
-        of the XMPP traffic need to do so at the WebSocket or other
-        appropriate layer.
+        target="tls"/>), applications need to protect the privacy
+        of XMPP traffic at the WebSocket or other appropriate layer.
       </t>
       <t>
         Browser based applications are not able to inspect
@@ -470,9 +484,9 @@ C: <open xmlns="urn:ietf:params:xml:ns:xmpp-framing"
         WebSocket connection, that check is already performed by the browser.
         However, in situations where the domain of the XMPP server
         might not match the origin for the WebSocket endpoint (especially multi-tenant
-        hosting situations), the HTTP discovery
-        method in <xref target="XEP-0156"/> MAY be used to delegate trust from
-        the XMPP server domain to the WebSocket origin.
+        hosting situations), the web host metadata method (see 
+        <xref target='RFC6415'/> and <xref target="XEP-0156"/>) MAY be used to 
+        delegate trust from the XMPP server domain to the WebSocket origin.
       </t>
       <t>
         When presented with a new WebSocket endpoint via the "see-other-uri" attribute
@@ -494,13 +508,15 @@ C: <open xmlns="urn:ietf:params:xml:ns:xmpp-framing"
     <references title="Normative References">
       <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml"?>
       <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.6120.xml"?>
-      <?rfc include="http://xmpp.org/extensions/refs/reference.XSF.XEP-0156.xml"?>
+      <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.6455.xml"?>
     </references>
     <references title="Informative References">
+      <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.5988.xml"?>
       <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.6121.xml"?>
       <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.6202.xml"?>
-      <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.6455.xml"?>
+      <?rfc include="http://xml.resource.org/public/rfc/bibxml/reference.RFC.6415.xml"?>
       <?rfc include="http://xmpp.org/extensions/refs/reference.XSF.XEP-0124.xml"?>
+      <?rfc include="http://xmpp.org/extensions/refs/reference.XSF.XEP-0156.xml"?>
       <?rfc include="http://xmpp.org/extensions/refs/reference.XSF.XEP-0198.xml"?>
       <?rfc include="http://xmpp.org/extensions/refs/reference.XSF.XEP-0199.xml"?>
       <?rfc include="http://xmpp.org/extensions/refs/reference.XSF.XEP-0206.xml"?>
@@ -547,8 +563,6 @@ C: <open xmlns="urn:ietf:params:xml:ns:xmpp-framing"
           <xs:attribute name='from' type='xs:string' 
                         use='optional'/>
           <xs:attribute name='id' type='xs:string' 
-                        use='optional'/>
-          <xs:attribute name='see-other-uri' type='xs:anyURI' 
                         use='optional'/>
           <xs:attribute name='to' type='xs:string' 
                         use='optional'/>
